@@ -1,9 +1,6 @@
 package io.github.carrknight.utils;
 
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.function.Function;
 
 /**
@@ -16,7 +13,7 @@ public abstract class SimpleRewardFunction<R> implements RewardFunction<Object, 
 
     @Override
     public double extractUtility(
-            @NotNull Object optionTaken, @NotNull R experimentResult, @Nullable Object contextObject) {
+            Object optionTaken, R experimentResult, Object contextObject) {
         return apply(experimentResult);
     }
 }

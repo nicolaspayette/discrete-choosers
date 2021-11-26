@@ -8,8 +8,6 @@ import io.github.carrknight.heatmaps.regression.LocalFilterSpace;
 import io.github.carrknight.utils.BoltzmannDistribution;
 import io.github.carrknight.utils.RewardFunction;
 import io.github.carrknight.utils.averager.IterativeAverageFilter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.SplittableRandom;
 import java.util.function.Function;
@@ -29,7 +27,7 @@ public class SoftmaxBanditAlgorithm<O,R,C> extends AbstractBanditAlgorithm<O,R,C
 
 
     public SoftmaxBanditAlgorithm(
-            @NotNull RewardFunction<O, R,C> rewardExtractor, @NotNull O[] optionsAvailable, double initialExpectedReward,
+            RewardFunction<O, R,C> rewardExtractor, O[] optionsAvailable, double initialExpectedReward,
             SplittableRandom randomizer,
             double temperature,
             Function<Double, Double> temperatureUpdater) {
@@ -53,11 +51,10 @@ public class SoftmaxBanditAlgorithm<O,R,C> extends AbstractBanditAlgorithm<O,R,C
      * @param lastChoice the last choice made
      * @return the next choice
      */
-    @NotNull
     @Override
     protected O choose(
-            BeliefState<O, R, C> state, @NotNull BiMap<O, Integer> optionsAvailable,
-            @Nullable Observation<O, R, C> lastObservation, O lastChoice) {
+            BeliefState<O, R, C> state, BiMap<O, Integer> optionsAvailable,
+            Observation<O, R, C> lastObservation, O lastChoice) {
 
         assert temperature>=1;
         //store memory of rewards into an array

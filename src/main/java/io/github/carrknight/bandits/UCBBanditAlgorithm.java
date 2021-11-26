@@ -8,8 +8,6 @@ import io.github.carrknight.heatmaps.regression.LocalFilterSpace;
 import io.github.carrknight.utils.DiscreteChoosersUtilities;
 import io.github.carrknight.utils.RewardFunction;
 import io.github.carrknight.utils.averager.IterativeAverageFilter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.SplittableRandom;
@@ -25,8 +23,8 @@ public class UCBBanditAlgorithm<O,R,C> extends AbstractBanditAlgorithm<O, R,C> {
 
 
     public UCBBanditAlgorithm(
-            @NotNull RewardFunction<O,R,C > rewardExtractor,
-            @NotNull O[] optionsAvailable,
+            RewardFunction<O,R,C > rewardExtractor,
+            O[] optionsAvailable,
             double initialExpectedReward,
             SplittableRandom randomizer,
             double minimumRewardExpected,
@@ -41,7 +39,7 @@ public class UCBBanditAlgorithm<O,R,C> extends AbstractBanditAlgorithm<O, R,C> {
                         new RewardFunction<O, R, C>() {
                             @Override
                             public double extractUtility(
-                                    @NotNull O optionTaken, @NotNull R experimentResult, @Nullable C contextObject) {
+                                    O optionTaken, R experimentResult, C contextObject) {
                                 //rescales rewards between 0 and 1!
                                 double reward = rewardExtractor.extractUtility(optionTaken,
                                                                                experimentResult,
@@ -80,11 +78,10 @@ public class UCBBanditAlgorithm<O,R,C> extends AbstractBanditAlgorithm<O, R,C> {
      * @param lastChoice
      * @return
      */
-    @NotNull
     @Override
     protected O choose(
-            BeliefState<O, R, C> state, @NotNull BiMap<O, Integer> optionsAvailable,
-            @Nullable Observation<O, R, C> lastObservation, O lastChoice) {
+            BeliefState<O, R, C> state, BiMap<O, Integer> optionsAvailable,
+            Observation<O, R, C> lastObservation, O lastChoice) {
 
         int numberOfOptions = optionsAvailable.size();
         //if there is an option without a single played game, play that first

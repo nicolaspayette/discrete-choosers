@@ -10,7 +10,6 @@ import io.github.carrknight.heatmaps.regression.FeatureExtractor;
 import io.github.carrknight.utils.DiscreteChoosersUtilities;
 import io.github.carrknight.utils.RewardFunction;
 import java.util.Map.Entry;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -98,7 +97,6 @@ public class ParticleSwarm<O,R,C> implements Chooser<O,R,C> {
             RewardFunction<O, R, C> reward,
             O[] optionsAvailable,
             SplittableRandom random,
-            @Nullable
             C initialContext) {
         Preconditions.checkArgument(projectors.length>0, "needs at least one projector!");
         Preconditions.checkArgument(optionsAvailable.length>0, "needs options!");
@@ -144,7 +142,7 @@ public class ParticleSwarm<O,R,C> implements Chooser<O,R,C> {
     @SafeVarargs
     @Override
     public final O updateAndChoose(
-            @Nullable Observation<O, R, C> observation,
+            Observation<O, R, C> observation,
             Observation<O, R, C>... additionalObservations)
     {
 

@@ -6,8 +6,6 @@ import io.github.carrknight.Observation;
 import io.github.carrknight.heatmaps.BeliefState;
 import io.github.carrknight.utils.DiscreteChoosersUtilities;
 import io.github.carrknight.utils.RewardFunction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class EpsilonGreedyBandit<O,R,C> extends AbstractBanditAlgorithm<O, R,C> {
 
@@ -25,8 +23,8 @@ public class EpsilonGreedyBandit<O,R,C> extends AbstractBanditAlgorithm<O, R,C> 
      * @param epsilon
      */
     public EpsilonGreedyBandit(
-            @NotNull RewardFunction<O,R,C> rewardExtractor,
-            @NotNull O[] optionsAvailable, long randomSeed, double epsilon) {
+            RewardFunction<O,R,C> rewardExtractor,
+            O[] optionsAvailable, long randomSeed, double epsilon) {
         super(rewardExtractor, optionsAvailable, randomSeed);
         Preconditions.checkArgument(epsilon>=0, "espilon cannot be lower than 0");
         Preconditions.checkArgument(epsilon<=1, "epsilon cannot be higher than 1");
@@ -46,11 +44,10 @@ public class EpsilonGreedyBandit<O,R,C> extends AbstractBanditAlgorithm<O, R,C> 
      * @param lastChoice the last choice made
      * @return new choice
      */
-    @NotNull
     @Override
     protected O choose(
-            BeliefState<O, R, C> state, @NotNull BiMap<O, Integer> optionsAvailable,
-            @Nullable Observation<O, R, C> lastObservation, O lastChoice) {
+            BeliefState<O, R, C> state, BiMap<O, Integer> optionsAvailable,
+            Observation<O, R, C> lastObservation, O lastChoice) {
 
         int numberOfOptions=optionsAvailable.size();
 

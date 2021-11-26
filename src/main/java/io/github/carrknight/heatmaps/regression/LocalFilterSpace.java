@@ -5,8 +5,6 @@ import io.github.carrknight.Observation;
 import io.github.carrknight.heatmaps.BeliefState;
 import io.github.carrknight.heatmaps.regression.distance.Similarity;
 import io.github.carrknight.utils.RewardFunction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,21 +20,18 @@ public class LocalFilterSpace<O,R,C> implements BeliefState<O,R,C>
 {
 
 
-    @NotNull
     private Map<O,OneDimensionalFilter> filters = new HashMap<>();
 
 
     private final RewardFunction<O,R,C> utility;
 
 
-    @Nullable
     private Similarity<O,C> optionSimilarity;
 
     public LocalFilterSpace(
             O[] optionsAvailable,
             OneDimensionalFilter[] givenFilters,
             RewardFunction<O, R, C> utility,
-            @Nullable
                     Similarity<O,C> optionSimilarity)
     {
         Preconditions.checkArgument(givenFilters.length==optionsAvailable.length);
@@ -59,7 +54,6 @@ public class LocalFilterSpace<O,R,C> implements BeliefState<O,R,C>
             O[] optionsAvailable,
             Supplier<? extends OneDimensionalFilter> filterMaker,
             RewardFunction<O, R, C> utility,
-            @Nullable
                     Similarity<O,C> optionSimilarity)
     {
         this.utility = utility;
@@ -130,7 +124,6 @@ public class LocalFilterSpace<O,R,C> implements BeliefState<O,R,C>
      *
      * @return Value for property 'optionSimilarity'.
      */
-    @Nullable
     public Similarity<O,C> getOptionSimilarity() {
         return optionSimilarity;
     }
@@ -140,7 +133,7 @@ public class LocalFilterSpace<O,R,C> implements BeliefState<O,R,C>
      *
      * @param optionSimilarity Value to set for property 'optionSimilarity'.
      */
-    public void setOptionSimilarity(@Nullable Similarity<O,C> optionSimilarity) {
+    public void setOptionSimilarity(Similarity<O,C> optionSimilarity) {
         this.optionSimilarity = optionSimilarity;
     }
 

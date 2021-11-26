@@ -4,8 +4,6 @@ import io.github.carrknight.heatmaps.regression.LocalFilterSpace;
 import io.github.carrknight.heatmaps.regression.OneDimensionalFilter;
 import io.github.carrknight.heatmaps.regression.distance.Similarity;
 import io.github.carrknight.utils.RewardFunction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 

@@ -3,7 +3,6 @@ package io.github.carrknight.bandits;
 
 import io.github.carrknight.Observation;
 import io.github.carrknight.heatmaps.BeliefState;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * basically the class deciding what should a bandit do with observed plays that weren't their own (say, a fisher
@@ -20,7 +19,6 @@ public interface BanditImitationPolicy<O,R,C> {
      * @param state currentStateOfTheBandit
      * @return null means ignore, anything else that gets returned will be fed by the chooser to the banditState.
      */
-    @Nullable
     public Observation<O,R,C> decideOnAdditionalInformation(
             Observation<O,R,C> additionalInformation,
             BeliefState<O,R,C> state

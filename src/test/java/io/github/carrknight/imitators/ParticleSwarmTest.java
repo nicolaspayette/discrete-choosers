@@ -9,8 +9,6 @@ import io.github.carrknight.heatmaps.regression.distance.FeatureKernel;
 import io.github.carrknight.heatmaps.regression.distance.RBFKernel;
 import io.github.carrknight.utils.RewardFunction;
 import io.github.carrknight.utils.SimpleObservation;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -146,7 +144,6 @@ public class ParticleSwarmTest {
      * creates a 50x50 map and a particle swarm object that needs to climb it!
      * @return
      */
-    @NotNull
     private ParticleSwarm<Point2D, Double, Object> setup() {
         //50x50 map
         Point2D[][] grid = new Point2D[50][50];
@@ -201,7 +198,6 @@ public class ParticleSwarmTest {
      * creates a 50x50 map and a particle swarm object USING KERNEL!
      * @return
      */
-    @NotNull
     private ParticleSwarm<Point2D, Double, Object> setup2() {
         //50x50 map
         Point2D[][] grid = new Point2D[50][50];

@@ -1,8 +1,6 @@
 package io.github.carrknight.bandits;
 
 import io.github.carrknight.utils.RewardFunction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.SplittableRandom;
 
@@ -25,8 +23,8 @@ public class SimpleSoftmaxBanditAlgorithm extends SoftmaxBanditAlgorithm<Integer
                 new RewardFunction<Integer, Double, Object>() {
                     @Override
                     public double extractUtility(
-                            @NotNull Integer optionTaken, @NotNull Double experimentResult,
-                            @Nullable Object contextObject) {
+                            Integer optionTaken, Double experimentResult,
+                            Object contextObject) {
                         return experimentResult;
                     }
                 },
@@ -51,8 +49,8 @@ public class SimpleSoftmaxBanditAlgorithm extends SoftmaxBanditAlgorithm<Integer
                 new RewardFunction<Integer, Double, Object>() {
                     @Override
                     public double extractUtility(
-                            @NotNull Integer optionTaken, @NotNull Double experimentResult,
-                            @Nullable Object contextObject) {
+                            Integer optionTaken, Double experimentResult,
+                            Object contextObject) {
                         return experimentResult;
                     }
                 },                SimpleEpsilonGreedyBandit.buildOptionsArray(numberOfOptions),
@@ -80,8 +78,8 @@ public class SimpleSoftmaxBanditAlgorithm extends SoftmaxBanditAlgorithm<Integer
                 new RewardFunction<Integer, Double, Object>() {
                     @Override
                     public double extractUtility(
-                            @NotNull Integer optionTaken, @NotNull Double experimentResult,
-                            @Nullable Object contextObject) {
+                            Integer optionTaken, Double experimentResult,
+                            Object contextObject) {
                         return experimentResult;
                     }
                 },

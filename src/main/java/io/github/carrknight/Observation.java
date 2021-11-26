@@ -1,9 +1,6 @@
 package io.github.carrknight;
 
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 /**
  * a pairing optionTaken ---> rewardAchieved
  * @param <O> the class of the options available (say, FishingSpot if we are modelling a fisher deciding where to go next);
@@ -14,23 +11,20 @@ import org.jetbrains.annotations.Nullable;
 public class Observation<O,R,C> {
 
 
-    @NotNull
     private final O choiceMade;
 
-    @NotNull
     private final R resultObserved;
 
-    @Nullable
     private final C context;
 
 
-    public Observation(@NotNull O choiceMade, @NotNull R resultObserved) {
+    public Observation(O choiceMade, R resultObserved) {
         this.choiceMade = choiceMade;
         this.resultObserved = resultObserved;
         this.context=null;
     }
 
-    public Observation(@NotNull O choiceMade, @NotNull R resultObserved, @Nullable C context) {
+    public Observation(O choiceMade, R resultObserved, C context) {
         this.choiceMade = choiceMade;
         this.resultObserved = resultObserved;
         this.context = context;
@@ -42,7 +36,6 @@ public class Observation<O,R,C> {
      *
      * @return Value for property 'choiceMade'.
      */
-    @NotNull
     public O getChoiceMade() {
         return choiceMade;
     }
@@ -52,7 +45,6 @@ public class Observation<O,R,C> {
      *
      * @return Value for property 'resultObserved'.
      */
-    @NotNull
     public R getResultObserved() {
         return resultObserved;
     }
@@ -62,7 +54,6 @@ public class Observation<O,R,C> {
      *
      * @return Value for property 'context'.
      */
-    @Nullable
     public C getContext() {
         return context;
     }

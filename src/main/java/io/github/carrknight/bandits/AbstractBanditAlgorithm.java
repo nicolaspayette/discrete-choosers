@@ -12,8 +12,6 @@ import io.github.carrknight.heatmaps.regression.OneDimensionalFilter;
 import io.github.carrknight.heatmaps.regression.distance.Similarity;
 import io.github.carrknight.utils.RewardFunction;
 import io.github.carrknight.utils.averager.IterativeAverageFilter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.SplittableRandom;
 import java.util.function.Supplier;
@@ -33,7 +31,6 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
      * A bimap describing all the options available to the bandit algorithm;
      * is a bimap really necessary? wouldn't two arrays do it?
      */
-    @NotNull
     private final BiMap<O,Integer> optionsAvailable;
 
     /**
@@ -69,11 +66,8 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
      * @param randomSeed random seed
      */
     public AbstractBanditAlgorithm(
-            @NotNull
 
                     RewardFunction<O,R,C > rewardExtractor,
-            @NotNull
-
                     O[] optionsAvailable, long randomSeed) {
 
         this(
@@ -95,7 +89,7 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
 
 
     public AbstractBanditAlgorithm(
-            @NotNull O[] optionsAvailable,
+            O[] optionsAvailable,
             SplittableRandom randomizer, final LocalFilterSpace<O, R, C> banditState) {
         Preconditions.checkArgument(optionsAvailable.length>0,
                                     "Given no options!");
@@ -168,12 +162,9 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
      * @param lastObservation
      * @return
      */
-    @NotNull
     abstract protected O choose(
             BeliefState<O,R,C> state,
-            @NotNull
                     BiMap<O,Integer> optionsAvailable,
-            @Nullable
                     Observation<O,R,C> lastObservation,
             O lastChoice
     ) ;

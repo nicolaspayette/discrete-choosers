@@ -1,8 +1,6 @@
 package io.github.carrknight;
 
 
-import org.jetbrains.annotations.Nullable;
-
 /**
  * The main interface of the library: the chooser is basically the algorithm that picks an option of type T from a set of options.
  * It is designed as something that makes decisions repeatedly, ideally in "rounds" or some other discrete time step. <br>
@@ -25,7 +23,7 @@ public interface Chooser<O,R,C> {
      * @param additionalObservations additional action-rewards observed (by imitation or whatever)
      * @return O chosen to play next
      */
-    O updateAndChoose(@Nullable Observation<O,R,C> observation,
+    O updateAndChoose(Observation<O,R,C> observation,
                       Observation<O,R,C>... additionalObservations);
 
 

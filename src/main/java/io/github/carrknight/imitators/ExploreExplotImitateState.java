@@ -2,8 +2,6 @@ package io.github.carrknight.imitators;
 
 import io.github.carrknight.Observation;
 import io.github.carrknight.utils.RewardFunction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * it may be best to consider the explore-exploit-imitate as a simple state machine.
@@ -13,11 +11,9 @@ public class ExploreExplotImitateState<O,R,C> {
 
 
 
-    @NotNull
     private final O favoriteOption;
 
 
-    @Nullable
     private final R favoriteResult;
 
 
@@ -51,8 +47,8 @@ public class ExploreExplotImitateState<O,R,C> {
      * @return the new favorite
      */
     public ExploreExplotImitateState<O,R,C> resolve(
-            @NotNull Observation<O,R,C> observation,
-            @NotNull RewardFunction<O,R,C> rewardFunction
+            Observation<O,R,C> observation,
+            RewardFunction<O,R,C> rewardFunction
     ){
         //if the previous option has no result (meaning that we must have just initialized, return the new observation)
         if(favoriteResult == null)

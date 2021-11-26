@@ -2,7 +2,6 @@ package io.github.carrknight.bandits;
 
 import io.github.carrknight.Observation;
 import io.github.carrknight.heatmaps.BeliefState;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * ignores all additional observations
@@ -15,7 +14,6 @@ public class IgnoreBanditImitationPolicy<O,R,C> implements BanditImitationPolicy
     /**
      * always return null
      */
-    @Nullable
     @Override
     public Observation<O, R, C> decideOnAdditionalInformation(
             Observation<O, R, C> additionalInformation, BeliefState<O,R,C> state) {
