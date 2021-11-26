@@ -8,11 +8,10 @@ import io.github.carrknight.heatmaps.regression.LocalFilterSpace;
 import io.github.carrknight.utils.BoltzmannDistribution;
 import io.github.carrknight.utils.RewardFunction;
 import io.github.carrknight.utils.averager.IterativeAverageFilter;
-
 import java.util.SplittableRandom;
 import java.util.function.Function;
 
-public class SoftmaxBanditAlgorithm<O,R,C> extends AbstractBanditAlgorithm<O,R,C> {
+public class SoftmaxBanditAlgorithm<O, R, C> extends AbstractBanditAlgorithm<O, R, C> {
 
     /**
      * the higher the more it will randomize rather than going for the top
@@ -20,49 +19,54 @@ public class SoftmaxBanditAlgorithm<O,R,C> extends AbstractBanditAlgorithm<O,R,C
     private double temperature;
 
     /**
-     * called each time a decision is made, will update the temperature; This is useful if you want high exploration initially
-     * but you want it to go down after a while
+     * called each time a decision is made, will update the temperature; This is useful if you want
+     * high exploration initially but you want it to go down after a while
      */
-    private Function<Double,Double> temperatureUpdater;
+    private Function<Double, Double> temperatureUpdater;
 
 
     public SoftmaxBanditAlgorithm(
-            RewardFunction<O, R,C> rewardExtractor, O[] optionsAvailable, double initialExpectedReward,
-            SplittableRandom randomizer,
-            double temperature,
-            Function<Double, Double> temperatureUpdater) {
+        RewardFunction<O, R, C> rewardExtractor, O[] optionsAvailable, double initialExpectedReward,
+        SplittableRandom randomizer,
+        double temperature,
+        Function<Double, Double> temperatureUpdater
+    ) {
         super(optionsAvailable, randomizer, new LocalFilterSpace<>(
-                optionsAvailable,
-                //by default use the standard average filter
-                () -> new IterativeAverageFilter(initialExpectedReward),
-                rewardExtractor,
-                null
+            optionsAvailable,
+            //by default use the standard average filter
+            () -> new IterativeAverageFilter(initialExpectedReward),
+            rewardExtractor,
+            null
         ));
         setTemperature(temperature);
         this.temperatureUpdater = temperatureUpdater;
     }
 
     /**
-     * to implement by subclasses; make a decision about what to play next AFTER learning has been done
+     * to implement by subclasses; make a decision about what to play next AFTER learning has been
+     * done
      *
-     * @param state the memory of the agent
+     * @param state            the memory of the agent
      * @param optionsAvailable the options available
-     * @param lastObservation the last observation made
-     * @param lastChoice the last choice made
+     * @param lastObservation  the last observation made
+     * @param lastChoice       the last choice made
      * @return the next choice
      */
     @Override
     protected O choose(
-            BeliefState<O, R, C> state, BiMap<O, Integer> optionsAvailable,
-            Observation<O, R, C> lastObservation, O lastChoice) {
+        BeliefState<O, R, C> state, BiMap<O, Integer> optionsAvailable,
+        Observation<O, R, C> lastObservation, O lastChoice
+    ) {
 
-        assert temperature>=1;
+        assert temperature >= 1;
         //store memory of rewards into an array
         double[] rewards = new double[optionsAvailable.size()];
-        for(int i=0; i<rewards.length; i++)
-            rewards[i]=state.predict(optionsAvailable.inverse().get(i),
-                                     lastObservation == null ? null : lastObservation.getContext()
-                                     );
+        for (int i = 0; i < rewards.length; i++) {
+            rewards[i] = state.predict(
+                optionsAvailable.inverse().get(i),
+                lastObservation == null ? null : lastObservation.getContext()
+            );
+        }
         //now pick by softmax
         BoltzmannDistribution distribution = new BoltzmannDistribution(rewards, temperature);
 
@@ -92,7 +96,7 @@ public class SoftmaxBanditAlgorithm<O,R,C> extends AbstractBanditAlgorithm<O,R,C
      */
     public void setTemperature(double temperature) {
 
-        Preconditions.checkArgument(temperature>=1, "temperature shouldn't go below 1");
+        Preconditions.checkArgument(temperature >= 1, "temperature shouldn't go below 1");
 
         this.temperature = temperature;
     }

@@ -1,11 +1,11 @@
 package io.github.carrknight.bandits;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
 import io.github.carrknight.Observation;
 import io.github.carrknight.heatmaps.BeliefState;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 public class BelieveAllBanditImitationPolicyTest {
 
@@ -16,11 +16,11 @@ public class BelieveAllBanditImitationPolicyTest {
 
         Observation input = mock(Observation.class);
         Observation output = a.decideOnAdditionalInformation(
-                input,
-                mock(BeliefState.class)
+            input,
+            mock(BeliefState.class)
         );
 
-        assertEquals(input,output);
+        assertEquals(input, output);
 
     }
 }

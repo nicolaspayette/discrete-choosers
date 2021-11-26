@@ -21,8 +21,7 @@
 package io.github.carrknight.heatmaps.regression.distance;
 
 /**
- * similarity is |x-y|/bandwidth
- * Created by carrknight on 8/24/16.
+ * similarity is |x-y|/bandwidth Created by carrknight on 8/24/16.
  */
 public class AbsoluteFeatureDistance implements FeatureDistance {
 
@@ -37,7 +36,7 @@ public class AbsoluteFeatureDistance implements FeatureDistance {
     @Override
     public double distance(double firstObservation, double secondObservation) {
 
-        return Math.abs(firstObservation-secondObservation)/bandwidth;
+        return Math.abs(firstObservation - secondObservation) / bandwidth;
     }
 
 

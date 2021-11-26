@@ -3,15 +3,15 @@ package io.github.carrknight.heatmaps.regression;
 import static io.github.carrknight.heatmaps.regression.GoodBadFilter.normalPDF;
 
 /**
- * a small version of the Kalman filter that doesn't really fit a linear model but just keeps observing only
- * a one dimensional evidence and tracks a one-dimensional space
+ * a small version of the Kalman filter that doesn't really fit a linear model but just keeps
+ * observing only a one dimensional evidence and tracks a one-dimensional space
  */
 public class OneDimensionalKalmanFilter implements OneDimensionalFilter {
 
     /**
      * the A of the model
      */
-    private double transitionMultiplier;
+    private final double transitionMultiplier;
 
     /**
      * the C of the model (that is x*c = evidence)
@@ -35,8 +35,12 @@ public class OneDimensionalKalmanFilter implements OneDimensionalFilter {
 
 
     public OneDimensionalKalmanFilter(
-            double transitionMultiplier, double emissionMultiplier, double uncertainty, double stateEstimate,
-            double drift) {
+        double transitionMultiplier,
+        double emissionMultiplier,
+        double uncertainty,
+        double stateEstimate,
+        double drift
+    ) {
         this.transitionMultiplier = transitionMultiplier;
         this.emissionMultiplier = emissionMultiplier;
         this.uncertainty = uncertainty;
@@ -45,30 +49,31 @@ public class OneDimensionalKalmanFilter implements OneDimensionalFilter {
     }
 
     /**
-     * when elapsing time we multiply the current estimate of the state by A and then we increase P by the Sigma_m
+     * when elapsing time we multiply the current estimate of the state by A and then we increase P
+     * by the Sigma_m
      */
-    public void drift()
-    {
+    public void drift() {
         stateEstimate = stateEstimate * transitionMultiplier;
-        uncertainty = uncertainty *(transitionMultiplier*transitionMultiplier)+drift;
+        uncertainty = uncertainty * (transitionMultiplier * transitionMultiplier) + drift;
     }
 
     /**
      * updates state estimate with new evidence
+     *
      * @param evidence the measurement
      * @param weight
      */
-    public void observe(double evidence, double weight)
-    {
-
+    public void observe(double evidence, double weight) {
 
         //weighs the importance of this new observation
-        double kalmanGain =  uncertainty * emissionMultiplier /
-                (uncertainty * emissionMultiplier * emissionMultiplier +1d/weight);
-        //update estimate in proportion to how far off the mark the prediction is (weighted by the kalman gain)
-        stateEstimate = stateEstimate + kalmanGain *(evidence - emissionMultiplier*stateEstimate);
+        double kalmanGain = uncertainty * emissionMultiplier /
+            (uncertainty * emissionMultiplier * emissionMultiplier + 1d / weight);
+        //update estimate in proportion to how far off the mark the prediction is (weighted by
+        // the kalman gain)
+        stateEstimate =
+            stateEstimate + kalmanGain * (evidence - emissionMultiplier * stateEstimate);
         //reduces uncertainty depending on the quality of the observation
-        uncertainty = uncertainty - uncertainty * kalmanGain  * emissionMultiplier;
+        uncertainty = uncertainty - uncertainty * kalmanGain * emissionMultiplier;
     }
 
     /**
@@ -97,13 +102,12 @@ public class OneDimensionalKalmanFilter implements OneDimensionalFilter {
         return stateEstimate;
     }
 
-    public double getStandardDeviation(){
+    public double getStandardDeviation() {
         return Math.sqrt(uncertainty);
     }
 
-    public double getProbabilityStateIsThis(double guess)
-    {
-        return normalPDF(stateEstimate,getStandardDeviation()).apply(guess);
+    public double getProbabilityStateIsThis(double guess) {
+        return normalPDF(stateEstimate, getStandardDeviation()).apply(guess);
     }
 
     /**

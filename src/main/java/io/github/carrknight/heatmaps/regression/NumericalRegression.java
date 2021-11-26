@@ -7,6 +7,7 @@ public interface NumericalRegression {
 
     /**
      * predict, if possible, at position x
+     *
      * @param x the vector describing the covariates X
      * @return y or NaN if prediction is impossible
      */
@@ -15,6 +16,7 @@ public interface NumericalRegression {
 
     /**
      * learn from observation
+     *
      * @param x the exogenous variables observed
      * @param y the endogenous variable observed
      */
@@ -23,17 +25,22 @@ public interface NumericalRegression {
 
     /**
      * checks a double[] array to see if all the numbers included are finite
-     * @param x an array
+     *
+     * @param x          an array
      * @param additional additional doubles to check
      * @return false if at least one element is not a finite number
      */
-    public static boolean isValidInput(double[] x, double... additional){
-        for(double element: x)
-            if(!Double.isFinite(element))
+    static boolean isValidInput(double[] x, double... additional) {
+        for (double element : x) {
+            if (!Double.isFinite(element)) {
                 return false;
-        for(double element: additional)
-            if(!Double.isFinite(element))
+            }
+        }
+        for (double element : additional) {
+            if (!Double.isFinite(element)) {
                 return false;
+            }
+        }
         return true;
 
     }

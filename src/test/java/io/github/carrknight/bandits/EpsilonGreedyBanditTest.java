@@ -1,31 +1,25 @@
 package io.github.carrknight.bandits;
 
+import static org.junit.Assert.assertEquals;
+
 import io.github.carrknight.utils.SimpleObservation;
 import io.github.carrknight.utils.averager.ExponentialMovingAverageFilter;
+import java.util.Random;
 import org.junit.Test;
 
-import java.util.Random;
-
-import static org.junit.Assert.*;
-
-public class EpsilonGreedyBanditTest
-{
-
+public class EpsilonGreedyBanditTest {
 
 
     //10 options, the last is the best; can the epsilon greedy find it?
     @Test
-    public void tenOptions()
-    {
-
+    public void tenOptions() {
 
         SimpleEpsilonGreedyBandit bandit =
-                new SimpleEpsilonGreedyBandit(
-                        10,
-                        System.currentTimeMillis(),
-                        .2
-                );
-
+            new SimpleEpsilonGreedyBandit(
+                10,
+                System.currentTimeMillis(),
+                .2
+            );
 
         Random random = new Random(System.currentTimeMillis());
         // should pick the best option
@@ -33,14 +27,14 @@ public class EpsilonGreedyBanditTest
             int arm = bandit.getLastChoice();
             double reward = random.nextGaussian() / 2 + arm;
             bandit.updateAndChoose(
-                    new SimpleObservation(arm,reward)
+                new SimpleObservation(arm, reward)
             );
         }
 
         //now you should be playing most
         bandit.setEpsilon(0);
 
-        assertEquals(9, (int)bandit.updateAndChoose(null));
+        assertEquals(9, (int) bandit.updateAndChoose(null));
 
         System.out.println(bandit.getBanditState());
     }
@@ -48,19 +42,16 @@ public class EpsilonGreedyBanditTest
 
     //exponential moving average should have little trouble adapting to changes in the reward
     @Test
-    public void suddenChange()
-    {
-
+    public void suddenChange() {
 
         SimpleEpsilonGreedyBandit bandit =
-                new SimpleEpsilonGreedyBandit(
-                        10,
-                        System.currentTimeMillis(),
-                        .8 //explore a lot
-                );
+            new SimpleEpsilonGreedyBandit(
+                10,
+                System.currentTimeMillis(),
+                .8 //explore a lot
+            );
         //change it into an EMA filtered bandit
         bandit.resetStateUsingThisFilter(() -> new ExponentialMovingAverageFilter(0, .4));
-
 
         Random random = new Random(System.currentTimeMillis());
         // should pick the best option
@@ -68,13 +59,13 @@ public class EpsilonGreedyBanditTest
             int arm = bandit.getLastChoice();
             double reward = random.nextGaussian() / 2 + 20 * arm;
             bandit.updateAndChoose(
-                    new SimpleObservation(arm,reward)
+                new SimpleObservation(arm, reward)
             );
         }
 
         //now you should be playing best
         bandit.setEpsilon(0);
-        assertEquals(9, (int)bandit.updateAndChoose(null));
+        assertEquals(9, (int) bandit.updateAndChoose(null));
         System.out.println(bandit.getBanditState());
 
         //but now reverse rewards!
@@ -82,14 +73,14 @@ public class EpsilonGreedyBanditTest
             int arm = bandit.getLastChoice();
             double reward = random.nextGaussian() / 2 - 20 * arm;
             bandit.updateAndChoose(
-                    new SimpleObservation(arm,reward)
+                new SimpleObservation(arm, reward)
             );
         }
 
         System.out.println(bandit.getBanditState());
 
         //should have switched!
-        assertEquals(0, (int)bandit.updateAndChoose(null));
+        assertEquals(0, (int) bandit.updateAndChoose(null));
 
     }
 

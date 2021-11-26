@@ -1,32 +1,26 @@
 package io.github.carrknight.bandits;
 
+import static org.junit.Assert.assertTrue;
+
 import io.github.carrknight.utils.SimpleObservation;
 import io.github.carrknight.utils.averager.ExponentialMovingAverageFilter;
+import java.util.Random;
 import org.junit.Test;
 
-import java.util.Random;
-
-import static org.junit.Assert.*;
-
 public class SoftmaxBanditAlgorithmTest {
-
-
-
 
 
     //10 options, the last is the best; can the SOFTMAX find it?
     @Test
     public void tenOptions() {
 
-
         //you need to add a high initial expectation if you don't want to get stuck!
         SimpleSoftmaxBanditAlgorithm bandit =
-                new SimpleSoftmaxBanditAlgorithm(
-                        10,
-                        System.currentTimeMillis(),
-                        100
-                );
-
+            new SimpleSoftmaxBanditAlgorithm(
+                10,
+                System.currentTimeMillis(),
+                100
+            );
 
         Random random = new Random(System.currentTimeMillis());
         // should pick the best option
@@ -34,7 +28,7 @@ public class SoftmaxBanditAlgorithmTest {
             int arm = bandit.getLastChoice();
             double reward = random.nextGaussian() / 2 + arm;
             bandit.updateAndChoose(
-                    new SimpleObservation(arm, reward)
+                new SimpleObservation(arm, reward)
             );
         }
 
@@ -42,11 +36,11 @@ public class SoftmaxBanditAlgorithmTest {
         //and you played the best the most
         System.out.println(bandit.getBanditState());
 
-        for(int i=0; i<9; i++) {
-            assertTrue(bandit.getBanditState().predict(9,null) >
-                               bandit.getBanditState().predict(i,null));
-            assertTrue(bandit.getBanditState().predict(9,null) >
-                               bandit.getBanditState().predict(i,null));
+        for (int i = 0; i < 9; i++) {
+            assertTrue(bandit.getBanditState().predict(9, null) >
+                bandit.getBanditState().predict(i, null));
+            assertTrue(bandit.getBanditState().predict(9, null) >
+                bandit.getBanditState().predict(i, null));
         }
 
     }
@@ -54,19 +48,17 @@ public class SoftmaxBanditAlgorithmTest {
 
     //exponential moving average should have little trouble adapting to changes in the reward
     @Test
-    public void suddenChange()
-    {
-
+    public void suddenChange() {
 
         SimpleSoftmaxBanditAlgorithm bandit =
-                new SimpleSoftmaxBanditAlgorithm(
-                        10,
-                        System.currentTimeMillis(),
-                        0,
-                        23163.6, //number that will drop to 1 after 1000 steps
-                        .99
+            new SimpleSoftmaxBanditAlgorithm(
+                10,
+                System.currentTimeMillis(),
+                0,
+                23163.6, //number that will drop to 1 after 1000 steps
+                .99
 
-                );
+            );
 
         bandit.resetStateUsingThisFilter(() -> new ExponentialMovingAverageFilter(0, .4));
 
@@ -76,17 +68,17 @@ public class SoftmaxBanditAlgorithmTest {
             int arm = bandit.getLastChoice();
             double reward = random.nextGaussian() / 2 + 20 * arm;
             bandit.updateAndChoose(
-                    new SimpleObservation(arm,reward)
+                new SimpleObservation(arm, reward)
             );
         }
 
         //now you should be playing best
         System.out.println(bandit.getBanditState());
-        for(int i=0; i<9; i++) {
-            assertTrue(bandit.getBanditState().predict(9,null) >
-                               bandit.getBanditState().predict(i,null));
+        for (int i = 0; i < 9; i++) {
+            assertTrue(bandit.getBanditState().predict(9, null) >
+                bandit.getBanditState().predict(i, null));
             assertTrue(bandit.getNumberOfTimesPlayed(9) >
-                               bandit.getNumberOfTimesPlayed(i));
+                bandit.getNumberOfTimesPlayed(i));
         }
 
         //but now reverse rewards!
@@ -94,19 +86,18 @@ public class SoftmaxBanditAlgorithmTest {
             int arm = bandit.getLastChoice();
             double reward = random.nextGaussian() / 2 - 20 * arm;
             bandit.updateAndChoose(
-                    new SimpleObservation(arm,reward)
+                new SimpleObservation(arm, reward)
             );
         }
 
         System.out.println(bandit.getBanditState());
 
         //should have switched!
-        for(int i=1; i<10; i++) {
-            assertTrue(bandit.getBanditState().predict(0,null) >
-                               bandit.getBanditState().predict(i,null));
+        for (int i = 1; i < 10; i++) {
+            assertTrue(bandit.getBanditState().predict(0, null) >
+                bandit.getBanditState().predict(i, null));
         }
     }
-
 
 
 }

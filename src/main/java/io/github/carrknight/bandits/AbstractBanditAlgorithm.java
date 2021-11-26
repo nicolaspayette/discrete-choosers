@@ -12,37 +12,38 @@ import io.github.carrknight.heatmaps.regression.OneDimensionalFilter;
 import io.github.carrknight.heatmaps.regression.distance.Similarity;
 import io.github.carrknight.utils.RewardFunction;
 import io.github.carrknight.utils.averager.IterativeAverageFilter;
-
 import java.util.SplittableRandom;
 import java.util.function.Supplier;
 
 /**
- * complicated name, simple class: it's an abstract class tagging and implementing the basics
- * of bandit algorithms that do not use context (which at least initially is all the bandit algorithms I have)
- * @param <O> the class of the options available (say, FishingSpot if we are modelling a fisher deciding where to go next);
- * @param <R> the class describing the reward object (say, FishCaught if we are modelling the fisher judging the spot they have just been to)
-
+ * complicated name, simple class: it's an abstract class tagging and implementing the basics of
+ * bandit algorithms that do not use context (which at least initially is all the bandit algorithms
+ * I have)
+ *
+ * @param <O> the class of the options available (say, FishingSpot if we are modelling a fisher
+ *            deciding where to go next);
+ * @param <R> the class describing the reward object (say, FishCaught if we are modelling the fisher
+ *            judging the spot they have just been to)
  */
-public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C> {
-
+public abstract class AbstractBanditAlgorithm<O, R, C> implements Chooser<O, R, C> {
 
 
     /**
-     * A bimap describing all the options available to the bandit algorithm;
-     * is a bimap really necessary? wouldn't two arrays do it?
+     * A bimap describing all the options available to the bandit algorithm; is a bimap really
+     * necessary? wouldn't two arrays do it?
      */
-    private final BiMap<O,Integer> optionsAvailable;
+    private final BiMap<O, Integer> optionsAvailable;
 
     /**
      * object storing current knowledge
      */
-    private BeliefState<O,R,C> banditState;
+    private BeliefState<O, R, C> banditState;
 
     /**
      * what to do about additional observations; default is to ignore
      */
-    private BanditImitationPolicy<O,R,C>  imitationPolicy =
-            new IgnoreBanditImitationPolicy<>();
+    private BanditImitationPolicy<O, R, C> imitationPolicy =
+        new IgnoreBanditImitationPolicy<>();
 
 
     /**
@@ -52,7 +53,7 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
 
     final private int[] timesPlayed;
 
-    private int numberOfObservations=0;
+    private int numberOfObservations = 0;
 
     /**
      * the randomizer to use
@@ -61,43 +62,48 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
 
     /**
      * An array describing all the options available to the bandit algorithm
-     * @param rewardExtractor transformer from R to double
+     *
+     * @param rewardExtractor  transformer from R to double
      * @param optionsAvailable what kind of options are available
-     * @param randomSeed random seed
+     * @param randomSeed       random seed
      */
     public AbstractBanditAlgorithm(
 
-                    RewardFunction<O,R,C > rewardExtractor,
-                    O[] optionsAvailable, long randomSeed) {
+        RewardFunction<O, R, C> rewardExtractor,
+        O[] optionsAvailable, long randomSeed
+    ) {
 
         this(
+            optionsAvailable,
+            new SplittableRandom(randomSeed),
+            //by default just keep separate memories for everything
+            new LocalFilterSpace<>(
                 optionsAvailable,
-                new SplittableRandom(randomSeed),
-                //by default just keep separate memories for everything
-                new LocalFilterSpace<>(
-                        optionsAvailable,
-                        //by default use the standard average filter
-                        () -> new IterativeAverageFilter(0d),
-                        rewardExtractor,
-                        null
-                ));
+                //by default use the standard average filter
+                () -> new IterativeAverageFilter(0d),
+                rewardExtractor,
+                null
+            )
+        );
 
 
     }
 
 
-
-
     public AbstractBanditAlgorithm(
-            O[] optionsAvailable,
-            SplittableRandom randomizer, final LocalFilterSpace<O, R, C> banditState) {
-        Preconditions.checkArgument(optionsAvailable.length>0,
-                                    "Given no options!");
+        O[] optionsAvailable,
+        SplittableRandom randomizer, final LocalFilterSpace<O, R, C> banditState
+    ) {
+        Preconditions.checkArgument(
+            optionsAvailable.length > 0,
+            "Given no options!"
+        );
 
         //turn array into bimap
         ImmutableBiMap.Builder<O, Integer> builder = ImmutableBiMap.builder();
-        for(int i=0; i<optionsAvailable.length; i++)
-            builder.put(optionsAvailable[i],i);
+        for (int i = 0; i < optionsAvailable.length; i++) {
+            builder.put(optionsAvailable[i], i);
+        }
 
         this.optionsAvailable = builder.build();
 
@@ -111,10 +117,9 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
 
 
     /**
-     * the main method of the chooser. It does two things at once:
-     * * Receives new information given a previous action (and possibly additional information from observing other
-     * choosers)
-     * * Picks a new O for next step and return it
+     * the main method of the chooser. It does two things at once: * Receives new information given
+     * a previous action (and possibly additional information from observing other choosers) * Picks
+     * a new O for next step and return it
      *
      * @param observation            the reward and action taken last
      * @param additionalObservations additional action-rewards observed (by imitation or whatever)
@@ -123,30 +128,36 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
     @SafeVarargs
     @Override
     public final O updateAndChoose(
-            Observation<O, R, C> observation,
-            Observation<O, R, C>... additionalObservations) {
+        Observation<O, R, C> observation,
+        Observation<O, R, C>... additionalObservations
+    ) {
         //learn from the last observation
-        if(observation!=null)
+        if (observation != null) {
             learnFromObservation(observation);
+        }
         //decide whether to learn from additional observations
         for (Observation<O, R, C> additional : additionalObservations) {
             Observation<O, R, C> filtered =
-                    imitationPolicy.decideOnAdditionalInformation(additional,
-                                                                  banditState);
-            if(filtered!=null)
+                imitationPolicy.decideOnAdditionalInformation(
+                    additional,
+                    banditState
+                );
+            if (filtered != null) {
                 learnFromObservation(filtered);
+            }
 
         }
 
         //now pick new option
-        lastChoice = choose(banditState,
-                            optionsAvailable,
-                            observation,
-                            lastChoice);
+        lastChoice = choose(
+            banditState,
+            optionsAvailable,
+            observation,
+            lastChoice
+        );
         return lastChoice;
 
     }
-
 
 
     private void learnFromObservation(Observation<O, R, C> observation) {
@@ -157,20 +168,23 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
 
 
     /**
-     * to implement by subclasses; make a decision about what to play next AFTER learning has been done
+     * to implement by subclasses; make a decision about what to play next AFTER learning has been
+     * done
+     *
      * @param state
      * @param lastObservation
      * @return
      */
     abstract protected O choose(
-            BeliefState<O,R,C> state,
-                    BiMap<O,Integer> optionsAvailable,
-                    Observation<O,R,C> lastObservation,
-            O lastChoice
-    ) ;
+        BeliefState<O, R, C> state,
+        BiMap<O, Integer> optionsAvailable,
+        Observation<O, R, C> lastObservation,
+        O lastChoice
+    );
 
     /**
-     * this is a simple getter that returns what the last choice made was. *this does not update choices*
+     * this is a simple getter that returns what the last choice made was. *this does not update
+     * choices*
      *
      * @return
      */
@@ -217,7 +231,6 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
     }
 
 
-
     /**
      * Getter for property 'randomizer'.
      *
@@ -227,7 +240,7 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
         return randomizer;
     }
 
-    public int getNumberOfTimesPlayed(O choice){
+    public int getNumberOfTimesPlayed(O choice) {
         return timesPlayed[optionsAvailable.get(choice)];
 
     }
@@ -246,19 +259,23 @@ public abstract class AbstractBanditAlgorithm<O,R,C> implements Chooser<O, R, C>
      * utility method to change quickly the BeliefState to another 1D filter method. Will only work
      * if the current BeliefState is also simple
      */
-    public void resetStateUsingThisFilter(Supplier<? extends OneDimensionalFilter> filter)
-    {
-        Preconditions.checkArgument(banditState instanceof LocalFilterSpace,
-                                    "you must have changed the bandit state away from LocalFilterSpace, now you can't call reset; just set the new state directly");
+    public void resetStateUsingThisFilter(Supplier<? extends OneDimensionalFilter> filter) {
+        Preconditions.checkArgument(
+            banditState instanceof LocalFilterSpace,
+            "you must have changed the bandit state away from LocalFilterSpace, now you can't "
+                + "call reset; just set the new state directly"
+        );
         assert banditState instanceof LocalFilterSpace;
         ((LocalFilterSpace) banditState).resetFilter(filter);
     }
 
 
-    public void resetSimilarityIndex(Similarity<O,C> similarity)
-    {
-        Preconditions.checkArgument(banditState instanceof LocalFilterSpace,
-                                    "you must have changed the bandit state away from LocalFilterSpace, now you can't call reset; just set the new state directly");
+    public void resetSimilarityIndex(Similarity<O, C> similarity) {
+        Preconditions.checkArgument(
+            banditState instanceof LocalFilterSpace,
+            "you must have changed the bandit state away from LocalFilterSpace, now you can't "
+                + "call reset; just set the new state directly"
+        );
         assert banditState instanceof LocalFilterSpace;
         ((LocalFilterSpace) banditState).setOptionSimilarity(similarity);
     }

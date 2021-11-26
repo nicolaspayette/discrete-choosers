@@ -6,16 +6,16 @@ import io.github.carrknight.utils.RewardFunction;
 
 /**
  * Has no belief except for the best observation so far
+ *
  * @param <O> choice type
  * @param <R> experiment result type
  * @param <C> context type
  */
-public class MonoBelief<O,R,C> implements BeliefState<O,R,C>
-{
+public class MonoBelief<O, R, C> implements BeliefState<O, R, C> {
 
-    private ExploreExplotImitateState<O,R,C> delegate;
+    private ExploreExplotImitateState<O, R, C> delegate;
 
-    private final RewardFunction<O,R,C> extractor;
+    private final RewardFunction<O, R, C> extractor;
 
 
     public MonoBelief(RewardFunction<O, R, C> extractor) {
@@ -23,7 +23,8 @@ public class MonoBelief<O,R,C> implements BeliefState<O,R,C>
     }
 
     /**
-     * ask the beliefState to predict the value (or whatever is being modelled) at these coordinates
+     * ask the beliefState to predict the value (or whatever is being modelled) at these
+     * coordinates
      *
      * @param whereToPredict    the option we want to predict the value of
      * @param predictionContext other information about what we are predicting
@@ -33,16 +34,19 @@ public class MonoBelief<O,R,C> implements BeliefState<O,R,C>
     public double predict(O whereToPredict, C predictionContext) {
 
         //if no memory, return 0
-        if(delegate==null || delegate.getFavoriteResult() == null)
+        if (delegate == null || delegate.getFavoriteResult() == null) {
             return 0;
-        else
+        } else
             //do not try to predict away from the only memory you keep
-            if(delegate.getFavoriteOption() == whereToPredict)
-                return extractor.extractUtility(delegate.getFavoriteOption(),
-                                                delegate.getFavoriteResult(),
-                                                predictionContext);
-            else
+            if (delegate.getFavoriteOption() == whereToPredict) {
+                return extractor.extractUtility(
+                    delegate.getFavoriteOption(),
+                    delegate.getFavoriteResult(),
+                    predictionContext
+                );
+            } else {
                 return Double.NaN;
+            }
 
     }
 
@@ -54,11 +58,16 @@ public class MonoBelief<O,R,C> implements BeliefState<O,R,C>
     @Override
     public void observe(Observation<O, R, C> observation) {
 
-        if(delegate== null)
-            delegate = new ExploreExplotImitateState<>(observation.getChoiceMade(),
-                                                       observation.getResultObserved());
+        if (delegate == null) {
+            delegate = new ExploreExplotImitateState<>(
+                observation.getChoiceMade(),
+                observation.getResultObserved()
+            );
+        }
 
-        delegate = delegate.resolve(observation,
-                         extractor);
+        delegate = delegate.resolve(
+            observation,
+            extractor
+        );
     }
 }

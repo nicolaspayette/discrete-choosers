@@ -14,7 +14,7 @@ public class IterativeAverageFilter implements OneDimensionalFilter {
      */
     private double numerator = 0;
 
-     private double totalWeight = 0;
+    private double totalWeight = 0;
 
     /**
      * when we don't have any information, we return this
@@ -34,13 +34,14 @@ public class IterativeAverageFilter implements OneDimensionalFilter {
      * learn from observation
      *
      * @param evidence the exogenous variables observed
-     * @param weight   the strength of the observation we have seen (1/sigma^2 if we know the uncertainty)
+     * @param weight   the strength of the observation we have seen (1/sigma^2 if we know the
+     *                 uncertainty)
      */
     @Override
     public void observe(double evidence, double weight) {
 
-        numerator+= evidence*weight;
-        totalWeight+=weight;
+        numerator += evidence * weight;
+        totalWeight += weight;
 
     }
 
@@ -50,6 +51,6 @@ public class IterativeAverageFilter implements OneDimensionalFilter {
     @Override
     public double predict() {
 
-        return totalWeight == 0 ? initialGuess : numerator/totalWeight;
+        return totalWeight == 0 ? initialGuess : numerator / totalWeight;
     }
 }

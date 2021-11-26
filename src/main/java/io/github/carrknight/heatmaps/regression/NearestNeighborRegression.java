@@ -3,16 +3,16 @@ package io.github.carrknight.heatmaps.regression;
 import com.google.common.base.Preconditions;
 import io.github.carrknight.Observation;
 import io.github.carrknight.heatmaps.regression.distance.FeatureDistance;
-
 import java.util.function.Function;
 
 /**
  * adaptor between feature based regression and the standard numerical nearest neighbour regression
+ *
  * @param <O> the type of options available
  * @param <R> class describing experiment results
  * @param <C> class describing experiment context
  */
-public class NearestNeighborRegression<O,R,C> extends FeatureBasedRegression<O, R, C> {
+public class NearestNeighborRegression<O, R, C> extends FeatureBasedRegression<O, R, C> {
 
     /**
      * KdTree doing all the work
@@ -21,22 +21,26 @@ public class NearestNeighborRegression<O,R,C> extends FeatureBasedRegression<O, 
 
 
     public NearestNeighborRegression(
-            FeatureExtractor<O, C>[] extractors,
-            Function<Observation<O, R, C>, Double> yExtractor,
-            double[] bandwidths,
-            FeatureDistance transformer, int maxNeighbours) {
+        FeatureExtractor<O, C>[] extractors,
+        Function<Observation<O, R, C>, Double> yExtractor,
+        double[] bandwidths,
+        FeatureDistance transformer, int maxNeighbours
+    ) {
         super(extractors, yExtractor);
-        Preconditions.checkArgument(bandwidths.length==extractors.length,
-                                    "The number of bandwidths should match number of extractors!");
+        Preconditions.checkArgument(
+            bandwidths.length == extractors.length,
+            "The number of bandwidths should match number of extractors!"
+        );
         delegate = new NearestNeighborNumericalRegression(
-                bandwidths,
-                transformer,
-                maxNeighbours
+            bandwidths,
+            transformer,
+            maxNeighbours
         );
     }
 
     /**
      * gets the number of maxNeighbours required and return their average value
+     *
      * @param x the features
      * @return average value of nearest neighbours
      */
@@ -47,6 +51,7 @@ public class NearestNeighborRegression<O,R,C> extends FeatureBasedRegression<O, 
 
     /**
      * Add observation to KD tree
+     *
      * @param y the endogenous variable observed
      * @param x the exogenous variables observed
      */

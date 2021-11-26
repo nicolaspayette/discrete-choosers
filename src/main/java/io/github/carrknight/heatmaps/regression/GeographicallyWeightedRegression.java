@@ -2,57 +2,52 @@ package io.github.carrknight.heatmaps.regression;
 
 import io.github.carrknight.Observation;
 import io.github.carrknight.heatmaps.regression.distance.Similarity;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 /**
  * Each option has a little recursive least square filter attached to it.
+ *
  * @param <O>
  * @param <R>
  * @param <C>
  */
-public class GeographicallyWeightedRegression<O,R,C> extends FeatureBasedRegression<O, R, C> {
+public class GeographicallyWeightedRegression<O, R, C> extends FeatureBasedRegression<O, R, C> {
 
 
     public static final double SIGNIFICANCE_THRESHOLD = .001;
     /**
      * tell how close two observations are
      */
-    private final Similarity<O,C> similarity;
+    private final Similarity<O, C> similarity;
 
 
-    private final Map<O,RecursiveLeastSquaresRegression> filters =
-            new HashMap<>();
+    private final Map<O, RecursiveLeastSquaresRegression> filters =
+        new HashMap<>();
 
 
     public GeographicallyWeightedRegression(
-            FeatureExtractor<O, C>[] extractors,
-            Function<Observation<O, R, C>, Double> yExtractor,
-            Similarity<O,C> similarity,
-            O[] optionsAvailable,
-            double forgettingFactor
-            ) {
+        FeatureExtractor<O, C>[] extractors,
+        Function<Observation<O, R, C>, Double> yExtractor,
+        Similarity<O, C> similarity,
+        O[] optionsAvailable,
+        double forgettingFactor
+    ) {
         super(extractors, yExtractor);
 
         this.similarity = similarity;
         for (O options : optionsAvailable) {
             filters.put(
-                    options,
-                    new RecursiveLeastSquaresRegression(
-                            0,
-                            10000,
-                            extractors.length,
-                            forgettingFactor
-                    )
+                options,
+                new RecursiveLeastSquaresRegression(
+                    0,
+                    10000,
+                    extractors.length,
+                    forgettingFactor
+                )
             );
         }
-
-
-
-
-
 
 
     }
@@ -66,7 +61,7 @@ public class GeographicallyWeightedRegression<O,R,C> extends FeatureBasedRegress
      */
     @Override
     public double predict(O whereToPredict, C predictionContext) {
-        return  predict(super.convertOptionToFeatures(whereToPredict,predictionContext));
+        return predict(super.convertOptionToFeatures(whereToPredict, predictionContext));
     }
 
     @Override
@@ -87,18 +82,23 @@ public class GeographicallyWeightedRegression<O,R,C> extends FeatureBasedRegress
      */
     @Override
     public void observe(Observation<O, R, C> observation) {
-        double[] x = super.convertOptionToFeatures(observation.getChoiceMade(),
-                                                         observation.getContext());
+        double[] x = super.convertOptionToFeatures(
+            observation.getChoiceMade(),
+            observation.getContext()
+        );
         Double y = super.yExtractor.apply(observation);
 
         for (Map.Entry<O, RecursiveLeastSquaresRegression> filter : filters.entrySet()) {
 
-            double weight = similarity.similarity(observation.getChoiceMade(),
-                                                  filter.getKey(),
-                                                  observation.getContext());
+            double weight = similarity.similarity(
+                observation.getChoiceMade(),
+                filter.getKey(),
+                observation.getContext()
+            );
 
-            if(weight> SIGNIFICANCE_THRESHOLD)
-                filter.getValue().observe(x,y,weight);
+            if (weight > SIGNIFICANCE_THRESHOLD) {
+                filter.getValue().observe(x, y, weight);
+            }
 
         }
 

@@ -7,7 +7,7 @@ import io.github.carrknight.heatmaps.BeliefState;
 import io.github.carrknight.utils.DiscreteChoosersUtilities;
 import io.github.carrknight.utils.RewardFunction;
 
-public class EpsilonGreedyBandit<O,R,C> extends AbstractBanditAlgorithm<O, R,C> {
+public class EpsilonGreedyBandit<O, R, C> extends AbstractBanditAlgorithm<O, R, C> {
 
 
     /**
@@ -17,61 +17,60 @@ public class EpsilonGreedyBandit<O,R,C> extends AbstractBanditAlgorithm<O, R,C> 
 
     /**
      * An array describing all the options available to the bandit algorithm
-     *  @param rewardExtractor  transformer from R to double
+     *
+     * @param rewardExtractor  transformer from R to double
      * @param optionsAvailable what kind of options are available
      * @param randomSeed       random seed
      * @param epsilon
      */
     public EpsilonGreedyBandit(
-            RewardFunction<O,R,C> rewardExtractor,
-            O[] optionsAvailable, long randomSeed, double epsilon) {
+        RewardFunction<O, R, C> rewardExtractor,
+        O[] optionsAvailable, long randomSeed, double epsilon
+    ) {
         super(rewardExtractor, optionsAvailable, randomSeed);
-        Preconditions.checkArgument(epsilon>=0, "espilon cannot be lower than 0");
-        Preconditions.checkArgument(epsilon<=1, "epsilon cannot be higher than 1");
+        Preconditions.checkArgument(epsilon >= 0, "espilon cannot be lower than 0");
+        Preconditions.checkArgument(epsilon <= 1, "epsilon cannot be higher than 1");
         this.epsilon = epsilon;
     }
 
 
-
-
     /**
-     * with probability epsilon, choose an option at random;
-     * otherwise exploit greedily (split at random if multiple arms have equal expected rewards)
+     * with probability epsilon, choose an option at random; otherwise exploit greedily (split at
+     * random if multiple arms have equal expected rewards)
      *
-     * @param state current memory of the bandit algorithm
+     * @param state            current memory of the bandit algorithm
      * @param optionsAvailable options available
-     * @param lastObservation the last observation made
-     * @param lastChoice the last choice made
+     * @param lastObservation  the last observation made
+     * @param lastChoice       the last choice made
      * @return new choice
      */
     @Override
     protected O choose(
-            BeliefState<O, R, C> state, BiMap<O, Integer> optionsAvailable,
-            Observation<O, R, C> lastObservation, O lastChoice) {
+        BeliefState<O, R, C> state, BiMap<O, Integer> optionsAvailable,
+        Observation<O, R, C> lastObservation, O lastChoice
+    ) {
 
-        int numberOfOptions=optionsAvailable.size();
+        int numberOfOptions = optionsAvailable.size();
 
         //explore:
-        if(getRandomizer().nextDouble() < epsilon)
-        {
+        if (getRandomizer().nextDouble() < epsilon) {
             int nextChoice = getRandomizer().nextInt(numberOfOptions);
             assert optionsAvailable.inverse().containsKey(nextChoice);
             return optionsAvailable.inverse().get(nextChoice);
-        }
-        else
-        {
+        } else {
 
             O bestOption = DiscreteChoosersUtilities.getBestOption(
-                    optionsAvailable.keySet(),
-                    o -> state.predict(o,
-                                       lastObservation == null ? null : lastObservation.getContext()
-                    ),
-                    getRandomizer(),
-                    Double.NEGATIVE_INFINITY
+                optionsAvailable.keySet(),
+                o -> state.predict(
+                    o,
+                    lastObservation == null ? null : lastObservation.getContext()
+                ),
+                getRandomizer(),
+                Double.NEGATIVE_INFINITY
             ).getKey();
             assert bestOption != null;
             return
-                    bestOption;
+                bestOption;
 
         }
 

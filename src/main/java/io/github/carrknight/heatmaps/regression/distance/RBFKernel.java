@@ -21,13 +21,11 @@
 package io.github.carrknight.heatmaps.regression.distance;
 
 /**
- * Takes a regression similarity and makes it into RBF kernel. Notice that in reality we probably want 1/this for similarity
- * since Kernels are a measure of similarity
- * Created by carrknight on 8/14/16.
+ * Takes a regression similarity and makes it into RBF kernel. Notice that in reality we probably
+ * want 1/this for similarity since Kernels are a measure of similarity Created by carrknight on
+ * 8/14/16.
  */
-public class RBFKernel implements FeatureKernel
-{
-
+public class RBFKernel implements FeatureKernel {
 
 
     private double bandwidth;
@@ -40,17 +38,18 @@ public class RBFKernel implements FeatureKernel
     @Override
     public double similarity(double firstObservation, double secondObservation) {
         double distance = firstObservation - secondObservation;
-        return Math.exp(- distance*distance/(bandwidth));
+        return Math.exp(-distance * distance / (bandwidth));
     }
 
 
     /**
      * utility method to use when you already have a difference and you know you will use RBF
+     *
      * @param difference
      * @return
      */
-    public double transform(double difference){
-        return  Math.exp(- difference*difference/(bandwidth));
+    public double transform(double difference) {
+        return Math.exp(-difference * difference / (bandwidth));
     }
 
     public double getBandwidth() {

@@ -1,7 +1,6 @@
 package io.github.carrknight.heatmaps.regression;
 
 import io.github.carrknight.heatmaps.regression.distance.FeatureKernel;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -19,13 +18,13 @@ public class KernelNumericalRegression implements NumericalRegression {
     private final Queue<double[]> observations = new LinkedList<>();
 
 
-
     private final FeatureKernel[] kernels;
 
 
     public KernelNumericalRegression(
-            FeatureKernel[] kernels,
-            int maximumNumberOfObservationsToKeep) {
+        FeatureKernel[] kernels,
+        int maximumNumberOfObservationsToKeep
+    ) {
         this.kernels = kernels;
         this.maximumNumberOfObservationsToKeep = maximumNumberOfObservationsToKeep;
     }
@@ -33,18 +32,19 @@ public class KernelNumericalRegression implements NumericalRegression {
     @Override
     public void observe(double[] x, Double y) {
 
-        if(!NumericalRegression.isValidInput(x,y))
+        if (!NumericalRegression.isValidInput(x, y)) {
             return;
+        }
 
-        double[] newObservation = new double[x.length+1];
-        for(int i=0; i<x.length; i++)
-            newObservation[i]=x[i];
+        double[] newObservation = new double[x.length + 1];
+        for (int i = 0; i < x.length; i++) {
+            newObservation[i] = x[i];
+        }
         newObservation[x.length] = y;
 
         observations.add(newObservation);
-        if(observations.size()>maximumNumberOfObservationsToKeep)
-        {
-            assert observations.size()==maximumNumberOfObservationsToKeep+1;
+        if (observations.size() > maximumNumberOfObservationsToKeep) {
+            assert observations.size() == maximumNumberOfObservationsToKeep + 1;
             observations.poll();
         }
 
@@ -54,42 +54,42 @@ public class KernelNumericalRegression implements NumericalRegression {
     @Override
     public double predict(double[] x) {
 
-        if(!NumericalRegression.isValidInput(x))
+        if (!NumericalRegression.isValidInput(x)) {
             return Double.NaN;
+        }
 
         assert x.length == kernels.length;
 
         double kernelSum = 0;
         double numerator = 0;
         //basically a fancy weighted regression
-        for(double[] observation : observations)
-        {
-            assert observation.length == x.length+1;
+        for (double[] observation : observations) {
+            assert observation.length == x.length + 1;
             double currentKernel = 1;
-            for(int i=0; i<x.length; i++) {
-
-
+            for (int i = 0; i < x.length; i++) {
 
                 currentKernel *= kernels[i].similarity(
-                        x[i],
-                        observation[i]
+                    x[i],
+                    observation[i]
                 );
                 //don't bother if it's a 0
-                if((currentKernel )<.00001)
+                if ((currentKernel) < .00001) {
                     break;
+                }
             }
 
-            if((currentKernel )>.00001) {
+            if ((currentKernel) > .00001) {
                 kernelSum += currentKernel;
                 //the last item of the memorized observation is actually the Y
                 numerator += currentKernel * observation[x.length];
             }
         }
 
-        if(kernelSum <.00001)
+        if (kernelSum < .00001) {
             return Double.NaN;
+        }
 
-        return numerator/kernelSum;
+        return numerator / kernelSum;
 
     }
 
@@ -105,7 +105,8 @@ public class KernelNumericalRegression implements NumericalRegression {
     /**
      * Setter for property 'maximumNumberOfObservationsToKeep'.
      *
-     * @param maximumNumberOfObservationsToKeep Value to set for property 'maximumNumberOfObservationsToKeep'.
+     * @param maximumNumberOfObservationsToKeep Value to set for property
+     *                                          'maximumNumberOfObservationsToKeep'.
      */
     public void setMaximumNumberOfObservationsToKeep(int maximumNumberOfObservationsToKeep) {
         this.maximumNumberOfObservationsToKeep = maximumNumberOfObservationsToKeep;

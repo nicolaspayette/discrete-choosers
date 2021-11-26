@@ -4,11 +4,10 @@ import io.github.carrknight.Observation;
 import io.github.carrknight.utils.RewardFunction;
 
 /**
- * it may be best to consider the explore-exploit-imitate as a simple state machine.
- * Each state waits for information and returns the new favourite option
+ * it may be best to consider the explore-exploit-imitate as a simple state machine. Each state
+ * waits for information and returns the new favourite option
  */
-public class ExploreExplotImitateState<O,R,C> {
-
+public class ExploreExplotImitateState<O, R, C> {
 
 
     private final O favoriteOption;
@@ -41,51 +40,61 @@ public class ExploreExplotImitateState<O,R,C> {
     }
 
     /**
-     * choose the new favorite in lieu of this new piece of information (uses new context to judge old favorite)
-     * @param observation the observation made
+     * choose the new favorite in lieu of this new piece of information (uses new context to judge
+     * old favorite)
+     *
+     * @param observation    the observation made
      * @param rewardFunction the utility function
      * @return the new favorite
      */
-    public ExploreExplotImitateState<O,R,C> resolve(
-            Observation<O,R,C> observation,
-            RewardFunction<O,R,C> rewardFunction
-    ){
-        //if the previous option has no result (meaning that we must have just initialized, return the new observation)
-        if(favoriteResult == null)
-        {
+    public ExploreExplotImitateState<O, R, C> resolve(
+        Observation<O, R, C> observation,
+        RewardFunction<O, R, C> rewardFunction
+    ) {
+        //if the previous option has no result (meaning that we must have just initialized,
+        // return the new observation)
+        if (favoriteResult == null) {
             assert observation.getResultObserved() != null;
-            return new ExploreExplotImitateState<>(observation.getChoiceMade(),
-                                                   observation.getResultObserved());
+            return new ExploreExplotImitateState<>(
+                observation.getChoiceMade(),
+                observation.getResultObserved()
+            );
         }
 
         //if we just played the same option (exploiting) then just update observed result
-        if(observation.getChoiceMade()==favoriteOption)
-            return new ExploreExplotImitateState<>(favoriteOption,
-                                                   observation.getResultObserved());
+        if (observation.getChoiceMade() == favoriteOption) {
+            return new ExploreExplotImitateState<>(
+                favoriteOption,
+                observation.getResultObserved()
+            );
+        }
 
         //get new reward
-        double newReward = rewardFunction.extractUtility(observation.getChoiceMade(),
-                                                         observation.getResultObserved(),
-                                                         observation.getContext());
-
-
+        double newReward = rewardFunction.extractUtility(
+            observation.getChoiceMade(),
+            observation.getResultObserved(),
+            observation.getContext()
+        );
 
         //get old reward
-        double currentReward = rewardFunction.extractUtility(favoriteOption,
-                                                             favoriteResult,
-                                                             observation.getContext());
+        double currentReward = rewardFunction.extractUtility(
+            favoriteOption,
+            favoriteResult,
+            observation.getContext()
+        );
 
         //pick option with best reward
-        if(newReward > currentReward)
+        if (newReward > currentReward) {
             return new ExploreExplotImitateState<>(
-                    observation.getChoiceMade(),
-                    observation.getResultObserved()
+                observation.getChoiceMade(),
+                observation.getResultObserved()
             );
-        else
+        } else {
             return new ExploreExplotImitateState<>(
-                    favoriteOption,
-                    favoriteResult
+                favoriteOption,
+                favoriteResult
             );
+        }
     }
 
 

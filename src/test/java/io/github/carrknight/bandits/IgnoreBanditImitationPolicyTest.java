@@ -1,11 +1,11 @@
 package io.github.carrknight.bandits;
 
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+
 import io.github.carrknight.Observation;
 import io.github.carrknight.heatmaps.BeliefState;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 public class IgnoreBanditImitationPolicyTest {
 
@@ -16,8 +16,8 @@ public class IgnoreBanditImitationPolicyTest {
 
         Observation input = mock(Observation.class);
         Observation output = a.decideOnAdditionalInformation(
-                input,
-                mock(BeliefState.class)
+            input,
+            mock(BeliefState.class)
         );
 
         assertNull(output);

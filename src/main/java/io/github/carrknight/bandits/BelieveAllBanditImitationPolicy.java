@@ -3,7 +3,8 @@ package io.github.carrknight.bandits;
 import io.github.carrknight.Observation;
 import io.github.carrknight.heatmaps.BeliefState;
 
-public class BelieveAllBanditImitationPolicy<O,R,C> implements BanditImitationPolicy<O, R, C> {
+public class BelieveAllBanditImitationPolicy<O, R, C> implements BanditImitationPolicy<O, R, C> {
+
     /**
      * treats all observations as believable and made by the chooser itself
      *
@@ -13,8 +14,9 @@ public class BelieveAllBanditImitationPolicy<O,R,C> implements BanditImitationPo
      */
     @Override
     public Observation<O, R, C> decideOnAdditionalInformation(
-            Observation<O, R, C> additionalInformation,
-            BeliefState<O,R,C> state) {
+        Observation<O, R, C> additionalInformation,
+        BeliefState<O, R, C> state
+    ) {
         return additionalInformation;
     }
 }

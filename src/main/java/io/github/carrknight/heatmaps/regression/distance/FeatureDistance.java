@@ -27,12 +27,12 @@ package io.github.carrknight.heatmaps.regression.distance;
 public interface FeatureDistance {
 
 
-    public double distance(double firstObservation, double secondObservation);
+    double distance(double firstObservation, double secondObservation);
 
 
-    public double getBandwidth();
+    double getBandwidth();
 
 
-    public void setBandwidth(double bandwidth);
+    void setBandwidth(double bandwidth);
 
 }

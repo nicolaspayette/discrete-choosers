@@ -21,12 +21,9 @@
 package io.github.carrknight.heatmaps.regression.distance;
 
 /**
- * similarity is (x-y)^2/bandwidth
- * Created by carrknight on 8/24/16.
+ * similarity is (x-y)^2/bandwidth Created by carrknight on 8/24/16.
  */
 public class CartesianFeatureDistance implements FeatureDistance {
-
-
 
 
     private double bandwidth;
@@ -40,7 +37,7 @@ public class CartesianFeatureDistance implements FeatureDistance {
     public double distance(double firstObservation, double secondObservation) {
 
         double distance = firstObservation - secondObservation;
-        return distance*distance/bandwidth;
+        return distance * distance / bandwidth;
     }
 
 

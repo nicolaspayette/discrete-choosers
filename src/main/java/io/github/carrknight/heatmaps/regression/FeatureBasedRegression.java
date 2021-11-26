@@ -2,33 +2,35 @@ package io.github.carrknight.heatmaps.regression;
 
 import io.github.carrknight.Observation;
 import io.github.carrknight.heatmaps.BeliefState;
-
 import java.util.function.Function;
 
 /**
  * the most common approach to regression is to boil down context, choices and results into a set of
  * numerical features and focus on those
+ *
  * @param <O> kind of option
  * @param <R> kind of experiment result
  * @param <C> kind of context for choice and prediction
  */
-public abstract class FeatureBasedRegression<O,R,C> implements BeliefState<O, R, C> {
+public abstract class FeatureBasedRegression<O, R, C> implements BeliefState<O, R, C> {
 
 
     /**
      * sets of objects to transform O,C pair into X numerical columns
      */
-    private final FeatureExtractor<O,C>[] extractors;
+    private final FeatureExtractor<O, C>[] extractors;
 
     /**
-     * function transforming the tuple O,R,C (usually focusing on R) into a number representing the Y value of the regression
+     * function transforming the tuple O,R,C (usually focusing on R) into a number representing the
+     * Y value of the regression
      */
-    protected final Function<Observation<O,R,C>,Double> yExtractor;
+    protected final Function<Observation<O, R, C>, Double> yExtractor;
 
 
     public FeatureBasedRegression(
-            FeatureExtractor<O, C>[] extractors,
-            Function<Observation<O, R, C>, Double> yExtractor) {
+        FeatureExtractor<O, C>[] extractors,
+        Function<Observation<O, R, C>, Double> yExtractor
+    ) {
         this.extractors = extractors;
         this.yExtractor = yExtractor;
     }
@@ -42,12 +44,13 @@ public abstract class FeatureBasedRegression<O,R,C> implements BeliefState<O, R,
      */
     @Override
     public double predict(O whereToPredict, C predictionContext) {
-        double[] x = convertOptionToFeatures((O) whereToPredict, (C) predictionContext);
+        double[] x = convertOptionToFeatures(whereToPredict, predictionContext);
 
         //never predict if any feature is NaN
         for (double feature : x) {
-            if(!Double.isFinite(feature))
+            if (!Double.isFinite(feature)) {
                 return Double.NaN;
+            }
         }
 
         return predict(x);
@@ -66,29 +69,28 @@ public abstract class FeatureBasedRegression<O,R,C> implements BeliefState<O, R,
         double[] x = convertOptionToFeatures(observation.getChoiceMade(), observation.getContext());
         Double y = yExtractor.apply(observation);
 
-
         //never bother if any feature is NaN
-        if(!NumericalRegression.isValidInput(x, y))
+        if (!NumericalRegression.isValidInput(x, y)) {
             return;
-
+        }
 
         observe(y, x);
     }
 
     /**
      * convert options!
+     *
      * @param choiceMade
      * @param context
      * @return
      */
     protected double[] convertOptionToFeatures(O choiceMade, C context) {
         return FeatureExtractor.convertToFeatures(
-                choiceMade,
-                context,
-                extractors
+            choiceMade,
+            context,
+            extractors
         );
     }
-
 
 
     public abstract void observe(Double y, double[] x);

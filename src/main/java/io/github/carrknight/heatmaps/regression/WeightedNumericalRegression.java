@@ -18,11 +18,12 @@ public abstract class WeightedNumericalRegression implements NumericalRegression
 
     /**
      * Prediction weighted by strength of observation
-     * @param x covariates
-     * @param y to predict
+     *
+     * @param x      covariates
+     * @param y      to predict
      * @param weight the weight of the regression (basically 1/sigma^2)
      */
-    public abstract  void observe(double[] x, double y, double weight);
+    public abstract void observe(double[] x, double y, double weight);
 
 
 }
