@@ -1,6 +1,6 @@
 package io.github.carrknight.imitators;
 
-import com.sun.javafx.UnmodifiableArrayList;
+import com.google.common.collect.ImmutableList;
 
 import java.util.SplittableRandom;
 
@@ -10,7 +10,7 @@ import java.util.SplittableRandom;
 public interface ExplorationStep<O,R,C> {
 
     O explore(
-            UnmodifiableArrayList<O> optionsAvailable,
+            ImmutableList<O> optionsAvailable,
             O lastChoiceMade,
             SplittableRandom random);
 

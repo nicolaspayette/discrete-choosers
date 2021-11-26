@@ -9,7 +9,7 @@ import io.github.carrknight.heatmaps.BeliefState;
 import io.github.carrknight.heatmaps.regression.FeatureExtractor;
 import io.github.carrknight.utils.DiscreteChoosersUtilities;
 import io.github.carrknight.utils.RewardFunction;
-import javafx.util.Pair;
+import java.util.Map.Entry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -163,7 +163,7 @@ public class ParticleSwarm<O,R,C> implements Chooser<O,R,C> {
         final C context = observation == null ? null : observation.getContext();
         //get best memory
         memory.observe(observation);
-        Pair<O,Double> bestMemory = DiscreteChoosersUtilities.getBestOption(
+        Entry<O,Double> bestMemory = DiscreteChoosersUtilities.getBestOption(
                 optionsAvailable,
                 o -> {
                     return memory.predict(o,
@@ -198,7 +198,7 @@ public class ParticleSwarm<O,R,C> implements Chooser<O,R,C> {
                 observedChoices.put(others.getChoiceMade(),
                                     reward);
         }
-        Pair<O,Double> bestFriend = observedChoices.size() > 0 ? DiscreteChoosersUtilities.getBestOption(
+        Entry<O,Double> bestFriend = observedChoices.size() > 0 ? DiscreteChoosersUtilities.getBestOption(
                 observedChoices.keySet(),
                 observedChoices::get,
                 random,
